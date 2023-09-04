@@ -2,11 +2,10 @@
 # Please run this script under ${project_id} in project directory of
 
 # Parses arguments
-model_name_or_path=gpt2
-dataset_path=data/alpaca/train
+model_name_or_path=meta-llama/Llama-2-13b-hf
+dataset_path=/home/paperspace/LMFlow/alpaca/train
 output_dir=output_models/finetune
-deepspeed_args="--master_port=11000"
-lora_target_modules=W_pack
+deepspeed_args="--include=localhost:6,7 --master_port=11000"
 
 while [[ $# -ge 1 ]]; do
   key="$1"
@@ -19,12 +18,12 @@ while [[ $# -ge 1 ]]; do
       dataset_path="$2"
       shift
       ;;
-    --lora_target_modules)
-      lora_target_modules="$2"
-      shift
-      ;;
     -o|--output_lora_path)
       output_dir="$2"
+      shift
+      ;;
+    --lora_target_modules)
+      lora_target_modules="$2"
       shift
       ;;
     --deepspeed_args)
@@ -44,19 +43,18 @@ project_dir=$(cd "$(dirname $0)"/..; pwd)
 log_dir=${project_dir}/log/${exp_id}
 mkdir -p ${output_dir} ${log_dir}
 
-deepspeed --include="localhost:7,6" ${deepspeed_args} \
+deepspeed ${deepspeed_args} \
   examples/finetune.py \
     --model_name_or_path ${model_name_or_path} \
-    --dataset_path ${dataset_path} \
     --trust_remote_code True \
+    --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
     --num_train_epochs 0.01 \
     --learning_rate 1e-4 \
     --block_size 512 \
     --per_device_train_batch_size 1 \
-    --use_lora 1 \
+    --use_qlora 1 \
     --lora_target_modules ${lora_target_modules} \
-    --lora_r 8 \
     --save_aggregated_lora 0\
     --deepspeed configs/ds_config_zero2.json \
     --fp16 \
