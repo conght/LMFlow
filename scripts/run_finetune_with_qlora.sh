@@ -38,7 +38,7 @@ while [[ $# -ge 1 ]]; do
 done
 
 # Finetune
-exp_id=finetune_with_lora
+exp_id=finetune_with_qlora
 project_dir=$(cd "$(dirname $0)"/..; pwd)
 log_dir=${project_dir}/log/${exp_id}
 mkdir -p ${output_dir} ${log_dir}
