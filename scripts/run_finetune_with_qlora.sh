@@ -49,15 +49,16 @@ deepspeed ${deepspeed_args} \
     --trust_remote_code True \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
-    --num_train_epochs 0.01 \
-    --learning_rate 1e-4 \
-    --block_size 512 \
-    --per_device_train_batch_size 1 \
+    --num_train_epochs 10 \
+    --lr_scheduler_type "linear" \
+    --warmup_ratio 0.1 \
+    --learning_rate 1e-3 \
+    --per_device_train_batch_size 4 \
+    --gradient_accumulation_steps 4 \
     --use_qlora 1 \
     --lora_target_modules ${lora_target_modules} \
     --save_aggregated_lora 0\
     --deepspeed configs/ds_config_zero2.json \
-    --fp16 \
     --run_name ${exp_id} \
     --validation_split_percentage 0 \
     --logging_steps 20 \
