@@ -36,10 +36,10 @@ def main():
     PipelineArguments = AutoArguments.get_pipeline_args_class(pipeline_name)
 
     parser = HfArgumentParser((ModelArguments, DatasetArguments, PipelineArguments))
-    if len(sys.argv) == 3 and sys.argv[3].endswith(".json"):
+    if len(sys.argv) == 3 and sys.argv[2].endswith(".json"):
         # If we pass only one argument to the script and it's the path to a json file,
         # let's parse it to get our arguments.
-        model_args, data_args, pipeline_args = parser.parse_json_file(json_file=os.path.abspath(sys.argv[1]))
+        model_args, data_args, pipeline_args = parser.parse_json_file(json_file=os.path.abspath(sys.argv[2]))
     else:
         model_args, data_args, pipeline_args = parser.parse_args_into_dataclasses()
 
