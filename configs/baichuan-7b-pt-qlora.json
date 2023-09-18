@@ -1,6 +1,6 @@
 {
     "run_name": "finetune_with_qlora_baichuan7B_0915",
-    "output_lora_path": "output_models/finetuned_baichuan7b_qlora_20230918_02",
+    "output_dir": "output_models/finetuned_baichuan7b_qlora_20230918_02",
     "overwrite_output_dir": true,
     "model_name_or_path": "models/Baichuan-7B",
     "trust_remote_code": true,
