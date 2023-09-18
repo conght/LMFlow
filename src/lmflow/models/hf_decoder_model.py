@@ -51,6 +51,9 @@ from transformers import (
     AutoModelForCausalLM,
 )
 
+import bitsandbytes as bnb
+from collections import defaultdict
+
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.decoder_model import DecoderModel
 from lmflow.models.interfaces.tunable import Tunable
@@ -142,6 +145,7 @@ class HFDecoderModel(DecoderModel, Tunable):
             "use_auth_token": True if model_args.use_auth_token else None,
             "trust_remote_code": model_args.trust_remote_code,
         }
+
         
         try:
             if model_args.tokenizer_name:
@@ -316,7 +320,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 if model_args.lora_target_modules:
                     lora_target_modules = model_args.lora_target_modules
                 else:
-                    lora_target_modules = None
+                    lora_target_modules = self._find_all_linear_names(model)
                 peft_config = LoraConfig(
                     task_type=TaskType.CAUSAL_LM,
                     inference_mode=False,
@@ -772,3 +776,54 @@ class HFDecoderModel(DecoderModel, Tunable):
         Return the backend model.
         """
         return self.backend_model
+
+    def _verify_model_dtype(model):
+        """
+        查看模型种各种类型的参数的情况
+        """
+        dtype2param_num = defaultdict(int)  # 每种数据类型的参数量
+        dtype2param_name = defaultdict(list)  # 每种数据类型的参数名称
+        dtype2trainable_param_num = defaultdict(int)  # 每种数据类型参与训练的参数量
+        dtype2trainable_param_name = defaultdict(list)  # 每种数据类型参与训练的参数名称
+        for name, p in model.named_parameters():
+            dtype = p.dtype
+            dtype2param_num[dtype] += p.numel()
+            dtype2param_name[dtype].append(name)
+            if p.requires_grad:
+                dtype2trainable_param_num[dtype] += p.numel()
+                dtype2trainable_param_name[dtype].append(name)
+        # 统计全部参数中，各种类型参数分布
+        total = 0
+        print('verify all params of the model')
+        for k, v in dtype2param_num.items():
+            total += v
+        for k, v in dtype2param_num.items():
+            print(k, v, v / total)
+        for k, v in dtype2trainable_param_name.items():
+            print(k, v)
+
+        print()
+        # 统计可训练参数中，各种类型参数分布
+        print('verify trainable params the model')
+        total_trainable = 0
+        for k, v in dtype2trainable_param_num.items():
+            total_trainable += v
+        for k, v in dtype2trainable_param_num.items():
+            print(k, v, v / total_trainable)
+        for k, v in dtype2trainable_param_num.items():
+            print(k, v)
+
+    def _find_all_linear_names(model):
+        """
+        找出所有全连接层，为所有全连接添加adapter
+        """
+        cls = bnb.nn.Linear4bit
+        lora_module_names = set()
+        for name, module in model.named_modules():
+            if isinstance(module, cls):
+                names = name.split('.')
+                lora_module_names.add(names[0] if len(names) == 1 else names[-1])
+
+        if 'lm_head' in lora_module_names:  # needed for 16-bit
+            lora_module_names.remove('lm_head')
+        return list(lora_module_names)
