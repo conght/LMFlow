@@ -28,7 +28,7 @@ model = AutoModelForCausalLM.from_pretrained(args.model_path, quantization_confi
 finetune_model = PeftModel.from_pretrained(model, args.output_dir)
 print('loading model')
 model = AutoModelForCausalLM.from_pretrained(args.model_path, quantization_config=q_config, device_map="auto", trust_remote_code=True)
-gen_kwargs = {"max_length": 128, "num_beams": 1, "do_sample": True, "top_p": 0.8,
+gen_kwargs = {"max_length": 512, "num_beams": 1, "do_sample": True, "top_p": 0.8,
                       "temperature": 0.8, "logits_processor": None, "eos_token_id": args.eos_token_id, "pad_token_id": args.pad_token_id}
 # gen_kwargs = {"max_length": 128, "num_beams": 1, "do_sample": True, "top_k": 1,
 #                       "temperature": 0.8, "logits_processor": None, "eos_token_id": args.eos_token_id, "pad_token_id": args.pad_token_id}
