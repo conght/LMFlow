@@ -38,7 +38,7 @@ while [[ $# -ge 1 ]]; do
 done
 
 # Finetune
-exp_id=finetune_with_qlora
+exp_id=finetune_with_qlora_baichuan7B_0905
 project_dir=$(cd "$(dirname $0)"/..; pwd)
 log_dir=${project_dir}/log/${exp_id}
 mkdir -p ${output_dir} ${log_dir}
@@ -49,13 +49,14 @@ deepspeed ${deepspeed_args} \
     --trust_remote_code True \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
-    --num_train_epochs 10 \
-    --lr_scheduler_type "linear" \
-    --warmup_ratio 0.1 \
-    --learning_rate 1e-3 \
-    --per_device_train_batch_size 4 \
-    --gradient_accumulation_steps 4 \
+    --num_train_epochs 8 \
+    --learning_rate 1e-4 \
+    --per_device_train_batch_size 8 \
+    --gradient_accumulation_steps 1 \
     --use_qlora 1 \
+    --lr_scheduler_type "cosine" \
+    --warmup_ratio 0.1 \
+    --fp16 \
     --lora_target_modules ${lora_target_modules} \
     --save_aggregated_lora 0\
     --deepspeed configs/ds_config_zero2.json \
@@ -68,3 +69,5 @@ deepspeed ${deepspeed_args} \
     --dataloader_num_workers 1 \
     | tee ${log_dir}/train.log \
     2> ${log_dir}/train.err
+    #--lr_scheduler_type "linear" \
+    #--warmup_ratio 0.1 \
