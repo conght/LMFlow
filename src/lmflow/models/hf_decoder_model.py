@@ -813,7 +813,7 @@ class HFDecoderModel(DecoderModel, Tunable):
         for k, v in dtype2trainable_param_num.items():
             print(k, v)
 
-    def _find_all_linear_names(model):
+    def _find_all_linear_names(self, model):
         """
         找出所有全连接层，为所有全连接添加adapter
         """

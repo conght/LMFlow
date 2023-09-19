@@ -1,17 +1,17 @@
 {
     "run_name": "finetune_with_qlora_baichuan7B_0915",
-    "output_dir": "output_models/finetuned_baichuan7b_qlora_20230918_02",
+    "output_dir": "output_models/finetuned_baichuan7b_qlora_20230918_03",
     "overwrite_output_dir": true,
     "model_name_or_path": "models/Baichuan-7B",
     "trust_remote_code": true,
     "dataset_path": "data/damage_data/20230915/train",
     "num_train_epochs": 8,
     "per_device_train_batch_size": 8,
-    "gradient_accumulation_steps": 2,
+    "gradient_accumulation_steps": 8,
     "learning_rate": 2e-4,
     "use_qlora": 1,
     "lr_scheduler_type": "constant_with_warmup",
-    "warmup_steps": 3000,
+    "warmup_steps": 10,
     "lora_alpha": 16,
     "lora_dropout": 0.05,
     "gradient_checkpointing": true,
@@ -31,9 +31,9 @@
     "remove_unused_columns": false,
     "save_aggregated_lora": 0,
     "validation_split_percentage": 0.1,
-    "logging_steps": 300,
+    "logging_steps": 30,
     "save_steps": 500,
     "save_total_limit": 1,
     "do_train": true,
-    "deepspeed": ""
+    "deepspeed": "/mnt/data0/conght/LMFlow/configs/ds_config_zero2.json"
 }
