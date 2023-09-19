@@ -4,17 +4,15 @@
 # --lora_model_path specifies the model difference introduced by finetuning,
 #   i.e. the one saved by ./scripts/run_finetune_with_lora.sh
 
-if [ ! -d data/alpaca ]; then
-  cd data && ./download.sh alpaca && cd -
-fi
 
 CUDA_VISIBLE_DEVICES=0 \
     deepspeed examples/evaluation.py \
     --answer_type text \
-    --model_name_or_path facebook/galactica-1.3b \
-    --lora_model_path output_models/finetune_with_lora \
-    --dataset_path data/alpaca/test \
+    --model_name_or_path models/Baichuan-7B \
+    --trust_remote_code True \
+    --lora_model_path output_models/finetuned_baichuan7b_qlora_20230918_03 \
+    --dataset_path data/damage_data/20230915/test \
     --prompt_structure "Input: {input}" \
     --deepspeed examples/ds_config.json \
     --inference_batch_size_per_device 1 \
-    --metric accuracy
+    --metric neg_log_likelihood
