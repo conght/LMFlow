@@ -5,9 +5,9 @@ if [ ! -d data/MedQA-USMLE ]; then
 fi
 
 CUDA_VISIBLE_DEVICES=0 accelerate launch --config_file configs/accelerator_singlegpu_config.yaml examples/evaluation.py \
-    --answer_type usmle \
-    --model_name_or_path gpt2-large \
-    --dataset_path data/MedQA-USMLE/validation \
+    --answer_type text \
+    --model_name_or_path models/Baichuan-7B \
+    --dataset_path data/damage_data/20230915/test \
     --use_ram_optimized_load True \
     --deepspeed examples/ds_config.json \
     --metric accuracy \
