@@ -1,6 +1,6 @@
 {
     "run_name": "finetune_with_qlora_moss_0915",
-    "output_dir": "output_models/finetuned_moss_13b_qlora_20230920_01",
+    "output_dir": "output_models/finetuned_moss_qlora_20230922_01",
     "overwrite_output_dir": true,
     "model_name_or_path": "models/moss-moon-003-base",
     "trust_remote_code": true,
