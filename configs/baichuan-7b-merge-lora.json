@@ -1,0 +1,17 @@
+{
+    "output_dir": "output_models/finetuned_baichuan7b_qlora_20230922_01",
+    "output_model_path": "models/Baichuan-7B-with-LoRA-20230922_01",
+    "overwrite_output_dir": true,
+    "model_name_or_path": "models/Baichuan-7B",
+    "trust_remote_code": true,
+    "use_qlora": 1,
+    "lora_r": 64,
+    "lora_alpha": 16,
+    "lora_dropout": 0.05,
+    "seed": 42,
+    "bits": 4,
+    "torch_dtype": "float32",
+    "double_quant":true,
+    "quant_type": "nf4",
+    "deepspeed": "configs/ds_config_zero2.json"
+}
