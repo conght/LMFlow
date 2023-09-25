@@ -1,6 +1,6 @@
 {
-    "output_dir": "output_models/finetuned_baichuan7b_qlora_20230922_01",
     "output_model_path": "models/Baichuan-7B-with-LoRA-20230922_01",
+    "lora_model_path": "output_models/finetuned_baichuan7b_qlora_20230922_01",
     "overwrite_output_dir": true,
     "model_name_or_path": "models/Baichuan-7B",
     "trust_remote_code": true,
